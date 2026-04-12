@@ -1,0 +1,21 @@
+---
+- name: Install fzf
+  ansible.builtin.apt:
+    name: "{{ fzf_package_name }}"
+    state: present
+  become: true
+
+- name: Find key-bindings.bash
+  ansible.builtin.command: find /usr/share/doc -name key-bindings.bash -print -quit
+  register: fzf_key_bindings_path
+  changed_when: false
+
+- name: Setup fzf key bindings in shell rc files
+  ansible.builtin.lineinfile:
+    # Ansible by default uses /root as HOME when running with sudo
+    path: "{{ item }}"
+    line: "source {{ fzf_key_bindings_path.stdout }}"
+    state: present
+    create: true
+  loop: "{{ fzf_shells }}"
+  when: fzf_key_bindings_path.stdout != ""

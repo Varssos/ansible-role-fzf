@@ -1,0 +1,5 @@
+# fzf
+fzf_package_name: "fzf"
+fzf_shells:
+  - "/home/{{ ansible_user }}/.bashrc"
+  # - "/home/{{ ansible_user }}/.zshrc"
