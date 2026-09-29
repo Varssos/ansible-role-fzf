@@ -1,7 +1,9 @@
 ---
 - name: Install fzf
   ansible.builtin.apt:
-    name: "{{ fzf_package_name }}"
+    name:
+      - "{{ fzf_package_name }}"
+      - bat # Install bat for preview in fzf view
     state: present
   become: true
 
@@ -19,3 +21,18 @@
     create: true
   loop: "{{ fzf_shells }}"
   when: fzf_key_bindings_path.stdout != ""
+
+- name: Configure fzf defaults in shell rc files
+  ansible.builtin.blockinfile:
+    path: "{{ item }}"
+    create: true
+    block: |
+      export FZF_DEFAULT_OPTS="--style full"
+      export FZF_COMPLETION_TRIGGER=''
+      export FZF_CTRL_T_OPTS="
+        --walker-skip .git,node_modules,target
+        --preview 'batcat -n --color=always {}'
+        --bind 'focus:transform-header:file --brief {}'"
+
+      source /usr/share/doc/fzf/examples/completion.bash
+  loop: "{{ fzf_shells }}"
