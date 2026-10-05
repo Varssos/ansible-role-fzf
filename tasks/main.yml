@@ -28,7 +28,7 @@
     create: true
     block: |
       export FZF_DEFAULT_OPTS="--style full"
-      export FZF_COMPLETION_TRIGGER=''
+      export FZF_COMPLETION_TRIGGER='**'
       export FZF_CTRL_T_OPTS="
         --walker-skip .git,node_modules,target
         --preview 'batcat -n --color=always {}'
